@@ -1,8 +1,9 @@
 package Flamingo;
 
 import Flamingo.Bot.FlamingoBot;
-import Flamingo.Listeners.Commands.Strike.Auth.GreaterThanOrEqualTo;
-import Flamingo.Listeners.Commands.Strike.Strike;
+import Flamingo.Listeners.Commands.Auth.GreaterThanOrEqualTo;
+import Flamingo.Listeners.Commands.Strike.StrikeManager;
+import Flamingo.Listeners.Commands.Strike.StrikeCommand;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -26,7 +27,7 @@ public class Main {
                 .withRegion("us-east-1")
                 .build();
         List<ListenerAdapter> listerners = new ArrayList<>();
-        listerners.add(new Strike(dynamoDB, new GreaterThanOrEqualTo()));
+        listerners.add(new StrikeCommand(new GreaterThanOrEqualTo(), new StrikeManager(dynamoDB)));
         FlamingoBot flamingo = new FlamingoBot(token, listerners);
     }
 }

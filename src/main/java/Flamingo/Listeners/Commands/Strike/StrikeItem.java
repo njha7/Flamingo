@@ -12,11 +12,13 @@ public class StrikeItem {
     public static final String KEY = "guild!user";
     public static final String TABLE_NAME = "FlamingoStrikes";
     public static final String EXPRESSION_SUBSTITUTION = ":s";
-    public static final Map<String, AttributeValue> EXPRESSION_ATTRIBUTE_VALUES = new HashMap<>();
+    public static final Map<String, AttributeValue> STRIKE_INCREMENT_VALUE = new HashMap<>();
     public static final String STRIKES = "strikes";
+    public static final Map<String, AttributeValue> STRIKE_RESET_VALUE = new HashMap<>();
 
     static {
-        EXPRESSION_ATTRIBUTE_VALUES.put(EXPRESSION_SUBSTITUTION, new AttributeValue().withN("1"));
+        STRIKE_INCREMENT_VALUE.put(EXPRESSION_SUBSTITUTION, new AttributeValue().withN("1"));
+        STRIKE_RESET_VALUE.put(EXPRESSION_SUBSTITUTION, new AttributeValue().withN("0"));
     }
 
     private static String buildKey(String guildId, String userId) {
@@ -38,7 +40,7 @@ public class StrikeItem {
         updateItemRequest.setTableName(StrikeItem.TABLE_NAME);
         updateItemRequest.setKey(StrikeItem.buildStrikeItemKey(guildId, userId));
         updateItemRequest.setUpdateExpression("ADD " + STRIKES + " " + StrikeItem.EXPRESSION_SUBSTITUTION);
-        updateItemRequest.setExpressionAttributeValues(StrikeItem.EXPRESSION_ATTRIBUTE_VALUES);
+        updateItemRequest.setExpressionAttributeValues(StrikeItem.STRIKE_INCREMENT_VALUE);
         updateItemRequest.setReturnValues(ReturnValue.UPDATED_NEW);
         return updateItemRequest;
     }
