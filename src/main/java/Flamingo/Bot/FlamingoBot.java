@@ -1,7 +1,5 @@
 package Flamingo.Bot;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;

@@ -2,6 +2,7 @@ package Flamingo.Listeners.Commands.Strike;
 
 import Flamingo.Listeners.Commands.AbstractCommand;
 import Flamingo.Listeners.Commands.AbstractCommandTest;
+import Flamingo.Listeners.Commands.Strike.Auth.GreaterThanOrEqualTo;
 import Flamingo.Listeners.Commands.TestAbstractCommand;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -35,7 +36,7 @@ public class StrikeTest extends AbstractCommandTest {
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .withRegion("us-east-1")
                 .build();
-        command = new Strike(dynamoDB);
+        command = new Strike(dynamoDB, new GreaterThanOrEqualTo());
     }
 
     @Test

@@ -1,6 +1,7 @@
 package Flamingo.Listeners.Commands.Strike;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
 
 import java.util.HashMap;
@@ -12,6 +13,8 @@ public class StrikeItem {
     public static final String TABLE_NAME = "FlamingoStrikes";
     public static final String EXPRESSION_SUBSTITUTION = ":s";
     public static final Map<String, AttributeValue> EXPRESSION_ATTRIBUTE_VALUES = new HashMap<>();
+    public static final String STRIKES = "strikes";
+
     static {
         EXPRESSION_ATTRIBUTE_VALUES.put(EXPRESSION_SUBSTITUTION, new AttributeValue().withN("1"));
     }
@@ -34,8 +37,9 @@ public class StrikeItem {
         UpdateItemRequest updateItemRequest = new UpdateItemRequest();
         updateItemRequest.setTableName(StrikeItem.TABLE_NAME);
         updateItemRequest.setKey(StrikeItem.buildStrikeItemKey(guildId, userId));
-        updateItemRequest.setUpdateExpression("ADD strikes " + StrikeItem.EXPRESSION_SUBSTITUTION);
+        updateItemRequest.setUpdateExpression("ADD " + STRIKES + " " + StrikeItem.EXPRESSION_SUBSTITUTION);
         updateItemRequest.setExpressionAttributeValues(StrikeItem.EXPRESSION_ATTRIBUTE_VALUES);
+        updateItemRequest.setReturnValues(ReturnValue.UPDATED_NEW);
         return updateItemRequest;
     }
 }
