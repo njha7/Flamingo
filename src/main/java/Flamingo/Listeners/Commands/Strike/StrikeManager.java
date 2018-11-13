@@ -29,7 +29,7 @@ public class StrikeManager {
     public String getStrikes(String guildId, String userId) {
         try {
             GetItemResult strikeResult = dynamoDB.getItem(StrikeItem.TABLE_NAME, buildStrikeItemKey(guildId, userId));
-            if (strikeResult.getItem() != null) {
+            if (strikeResult.getItem() == null) {
                 StringBuilder messageBuilder = new StringBuilder();
                 messageBuilder.append("<@" + userId + ">");
                 messageBuilder.append(" has no strikes.");
