@@ -20,8 +20,8 @@ public class QueryStrikeCommand extends CommandAction {
 
     @Override
     public String command(MessageReceivedEvent event) {
-        if (event.getMessage().getMentionedMembers() != null || !event.getMessage().getMentionedMembers().isEmpty()) {
-            return "Malformed command. Please double check and try again.";
+        if (event.getMessage().getMentionedMembers() != null || event.getMessage().getMentionedMembers().isEmpty()) {
+            return "Please mention a user.";
         }
         return strikeManager.getStrikes(event.getGuild().getId(), event.getMessage().getMentionedMembers().get(0).getUser().getId());
     }
