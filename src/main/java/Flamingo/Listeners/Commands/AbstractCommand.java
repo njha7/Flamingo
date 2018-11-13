@@ -12,7 +12,7 @@ public abstract class AbstractCommand extends AbstractFlamingoListener {
     public static final String COMMAND_PREFIX = "~";
     public static final String COMMAND = COMMAND_PREFIX + "abstractCommand";
 
-    private final Map<String, CommandAction> commandActions;
+    protected final Map<String, CommandAction> commandActions;
 
     public AbstractCommand(Map<String, CommandAction> commandActions) {
         this.commandActions = commandActions;
@@ -44,11 +44,9 @@ public abstract class AbstractCommand extends AbstractFlamingoListener {
         return message.getContentDisplay().startsWith(COMMAND);
     }
 
-    protected String parseCommand(String message) {
-        return null;
-    }
+    protected abstract String parseCommand(String message);
 
-    private void dmUser(User user, CharSequence message) {
+    protected void dmUser(User user, CharSequence message) {
         user.openPrivateChannel().queue((channel) -> {
             channel.sendMessage(message).queue();
         });
