@@ -11,7 +11,7 @@ import java.util.Comparator;
 public class GreaterThanOrEqualTo implements AuthStrategy {
 
     @Override
-    public boolean authorizedToStrike(MessageReceivedEvent event) {
+    public boolean isAuthorized(MessageReceivedEvent event) {
         Member striker = event.getMember();
         Member target = null;
         if (event.getMessage().getMentionedMembers() != null || !event.getMessage().getMentionedMembers().isEmpty()) {

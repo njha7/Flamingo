@@ -33,7 +33,6 @@ public class StrikeManager {
         try {
             UpdateItemResult updateItemRequest = dynamoDB.updateItem(buildClearstrike(guildId, userId));
             String strikes = updateItemRequest.getAttributes().get(StrikeItem.STRIKES).getN();
-            System.out.println(strikes);
             StringBuilder messageBuilder = new StringBuilder();
             messageBuilder.append(" Strikes for ");
             messageBuilder.append("<@" + userId + ">");

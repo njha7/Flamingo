@@ -4,5 +4,5 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public interface AuthStrategy {
 
-    public boolean authorizedToStrike(MessageReceivedEvent event);
+    public boolean isAuthorized(MessageReceivedEvent event);
 }

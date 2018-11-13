@@ -5,7 +5,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class Moderator implements AuthStrategy {
     @Override
-    public boolean authorizedToStrike(MessageReceivedEvent event) {
+    public boolean isAuthorized(MessageReceivedEvent event) {
         return event.getMember().hasPermission(Permission.VIEW_AUDIT_LOGS);
     }
 }

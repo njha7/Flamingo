@@ -1,4 +1,4 @@
-package Flamingo.Listeners.Commands.Auth;
+package Flamingo.Listeners.Commands.Strike;
 
 import Flamingo.Listeners.Commands.Strike.StrikeItem;
 import Flamingo.Listeners.Commands.Strike.StrikeManager;

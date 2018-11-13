@@ -1,18 +1,19 @@
 package Flamingo.Bot;
 
+import Flamingo.Listeners.Commands.AbstractCommandFactory;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
-import java.util.Collection;
 
 public class FlamingoBot {
 
-    public FlamingoBot(String token, Collection<ListenerAdapter> listenerAdapters) {
+    public FlamingoBot(String token, AbstractCommandFactory... commandFactories) {
         JDABuilder builder = new JDABuilder(AccountType.BOT);
         builder.setToken(token);
-        listenerAdapters.forEach(listener -> builder.addEventListener(listener));
+        for (AbstractCommandFactory factory : commandFactories) {
+            builder.addEventListener(factory.build());
+        }
         try {
             builder.build();
         } catch (LoginException e) {

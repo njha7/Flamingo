@@ -1,13 +1,12 @@
 package Flamingo.Listeners.Commands.Strike;
 
-import Flamingo.Listeners.Commands.AbstractCommand;
 import Flamingo.Listeners.Commands.Auth.AuthStrategy;
+import Flamingo.Listeners.Commands.CommandAction;
 import com.google.inject.Inject;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class StrikeCommand extends AbstractCommand {
-    public static final String COMMAND = COMMAND_PREFIX + "strike";
+public class StrikeCommand implements CommandAction {
+    public static final String COMMAND = "";
     private final AuthStrategy authStrategy;
     private final StrikeManager strikeManager;
 
@@ -19,17 +18,12 @@ public class StrikeCommand extends AbstractCommand {
     }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
-        if (isRespondable(event) && isCommand(event.getMessage())) {
-            if (authStrategy.authorizedToStrike(event)) {
-                String response = strikeManager.strike(event.getGuild().getId(), event.getMessage().getMentionedMembers().get(0).getUser().getId());
-                event.getChannel().sendMessage(response).queue();
-            }
-        }
+    public boolean isAuthorized(MessageReceivedEvent event) {
+        return authStrategy.isAuthorized(event);
     }
 
     @Override
-    protected boolean isCommand(Message message) {
-        return message.getContentDisplay().startsWith(COMMAND);
+    public String command(MessageReceivedEvent event) {
+        return strikeManager.strike(event.getGuild().getId(), event.getMessage().getMentionedMembers().get(0).getUser().getId());
     }
 }

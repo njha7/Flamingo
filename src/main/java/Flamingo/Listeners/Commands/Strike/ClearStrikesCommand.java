@@ -1,13 +1,12 @@
 package Flamingo.Listeners.Commands.Strike;
 
-import Flamingo.Listeners.Commands.AbstractCommand;
 import Flamingo.Listeners.Commands.Auth.AuthStrategy;
-import net.dv8tion.jda.core.entities.Message;
+import Flamingo.Listeners.Commands.CommandAction;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class ClearStrikesCommand extends AbstractCommand {
+public class ClearStrikesCommand implements CommandAction {
 
-    public static final String COMMAND = COMMAND_PREFIX + "strike clear";
+    public static final String COMMAND = "clear";
     private final AuthStrategy authStrategy;
     private final StrikeManager strikeManager;
 
@@ -17,18 +16,12 @@ public class ClearStrikesCommand extends AbstractCommand {
     }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
-        if (isRespondable(event) && isCommand(event.getMessage())) {
-            if (authStrategy.authorizedToStrike(event)) {
-                String response = strikeManager.clearStrikes(event.getGuild().getId(), event.getMessage().getMentionedMembers().get(0).getUser().getId());
-                event.getChannel().sendMessage(response).queue();
-
-            }
-        }
+    public boolean isAuthorized(MessageReceivedEvent event) {
+        return authStrategy.isAuthorized(event);
     }
 
     @Override
-    protected boolean isCommand(Message message) {
-        return message.getContentDisplay().startsWith(COMMAND);
+    public String command(MessageReceivedEvent event) {
+        return strikeManager.clearStrikes(event.getGuild().getId(), event.getMessage().getMentionedMembers().get(0).getUser().getId());
     }
 }
