@@ -20,6 +20,7 @@ public class StrikeFactory extends AbstractCommandFactory {
         Map<String, CommandAction> commandActionMap = new HashMap<>();
         commandActionMap.put(StrikeCommand.COMMAND, new StrikeCommand(new GreaterThanOrEqualTo(), strikeManager));
         commandActionMap.put(ClearStrikesCommand.COMMAND, new ClearStrikesCommand(new Moderator(), strikeManager));
+        commandActionMap.put(QueryStrikeCommand.COMMAND, new QueryStrikeCommand(strikeManager));
         return new Strike(commandActionMap);
     }
 

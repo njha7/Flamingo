@@ -1,10 +1,7 @@
 package Flamingo.Listeners.Commands.Strike;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ReturnValue;
-import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
-import com.amazonaws.services.dynamodbv2.model.UpdateItemResult;
+import com.amazonaws.services.dynamodbv2.model.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,10 +26,28 @@ public class StrikeManager {
         }
     }
 
+    public String getStrikes(String guildId, String userId) {
+        try {
+            GetItemResult strikeResult = dynamoDB.getItem(StrikeItem.TABLE_NAME, buildStrikeItemKey(guildId, userId));
+            if (strikeResult.getItem() != null) {
+                StringBuilder messageBuilder = new StringBuilder();
+                messageBuilder.append("<@" + userId + ">");
+                messageBuilder.append(" has no strikes.");
+                return messageBuilder.toString();
+            }
+            String strikes = strikeResult.getItem().get(StrikeItem.STRIKES).getN();
+            StringBuilder messageBuilder = new StringBuilder();
+            messageBuilder.append("<@" + userId + ">");
+            messageBuilder.append(" has " + strikes + " strikes.");
+            return messageBuilder.toString();
+        } catch (Exception e) {
+            return "An error has occurred. Please try again later";
+        }
+    }
+
     public String clearStrikes(String guildId, String userId) {
         try {
-            UpdateItemResult updateItemRequest = dynamoDB.updateItem(buildClearstrike(guildId, userId));
-            String strikes = updateItemRequest.getAttributes().get(StrikeItem.STRIKES).getN();
+            dynamoDB.updateItem(buildClearstrike(guildId, userId));
             StringBuilder messageBuilder = new StringBuilder();
             messageBuilder.append(" Strikes for ");
             messageBuilder.append("<@" + userId + ">");
