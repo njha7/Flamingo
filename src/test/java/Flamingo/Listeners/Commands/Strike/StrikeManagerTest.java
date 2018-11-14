@@ -1,7 +1,5 @@
 package Flamingo.Listeners.Commands.Strike;
 
-import Flamingo.Listeners.Commands.Strike.StrikeItem;
-import Flamingo.Listeners.Commands.Strike.StrikeManager;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
