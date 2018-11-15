@@ -1,8 +1,6 @@
 package Flamingo.Listeners.Commands.Strike;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ReturnValue;
-import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,29 +17,5 @@ public class StrikeItem {
     static {
         STRIKE_INCREMENT_VALUE.put(EXPRESSION_SUBSTITUTION, new AttributeValue().withN("1"));
         STRIKE_RESET_VALUE.put(EXPRESSION_SUBSTITUTION, new AttributeValue().withN("0"));
-    }
-
-    private static String buildKey(String guildId, String userId) {
-        StringBuilder sb = new StringBuilder(guildId.length() + userId.length() + 1);
-        sb.append(guildId);
-        sb.append(KEY_SEPARATOR);
-        sb.append(userId);
-        return sb.toString();
-    }
-
-    private static Map<String, AttributeValue> buildStrikeItemKey(String guildId, String userId) {
-        Map<String, AttributeValue> key = new HashMap<>();
-        key.put(KEY, new AttributeValue().withS(buildKey(guildId, userId)));
-        return key;
-    }
-
-    public static UpdateItemRequest buildStrike(String guildId, String userId) {
-        UpdateItemRequest updateItemRequest = new UpdateItemRequest();
-        updateItemRequest.setTableName(StrikeItem.TABLE_NAME);
-        updateItemRequest.setKey(StrikeItem.buildStrikeItemKey(guildId, userId));
-        updateItemRequest.setUpdateExpression("ADD " + STRIKES + " " + StrikeItem.EXPRESSION_SUBSTITUTION);
-        updateItemRequest.setExpressionAttributeValues(StrikeItem.STRIKE_INCREMENT_VALUE);
-        updateItemRequest.setReturnValues(ReturnValue.UPDATED_NEW);
-        return updateItemRequest;
     }
 }
