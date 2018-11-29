@@ -7,8 +7,7 @@ import Flamingo.Listeners.Commands.Auth.GreaterThanOrEqualTo;
 import Flamingo.Listeners.Commands.Auth.Moderator;
 import Flamingo.Listeners.Commands.Pasta.PastaFactory;
 import Flamingo.Listeners.Commands.Strike.StrikeFactory;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -29,11 +28,8 @@ public class Main {
     public static void main(String[] args) {
         Dotenv dotenv = Dotenv.load();
         String token = dotenv.get("DISCORD_TOKEN");
-        String accessKey = dotenv.get("AWS_ACCESS_KEY_ID");
-        String secretKey = dotenv.get("AWS_SECRET_ACCESS_KEY");
-        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
         AmazonDynamoDB dynamoDB = AmazonDynamoDBClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+                .withCredentials(new InstanceProfileCredentialsProvider(false))
                 .withRegion("us-east-1")
                 .build();
 
