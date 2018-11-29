@@ -9,20 +9,24 @@ import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-import static Flamingo.Listeners.Commands.Pasta.PastaItem.buildPastaItemKey;
+public class PastaManagerV2 extends PastaManager {
 
-public class PastaManager {
-
-    private static final String CONDITION_EXPRESSION = "attribute_not_exists(" + PastaItem.KEY_EXPRESSION_SUBSTITUTION + ")";
+    private static final String CONDITION_EXPRESSION = "attribute_not_exists(" + PastaItemV2.HASH_KEY + ") and attribute_not_exists(" + PastaItemV2.RANGE_KEY + ")";
     private final AmazonDynamoDB dynamoDB;
 
-    public PastaManager(AmazonDynamoDB dynamoDB) {
+    public PastaManagerV2(AmazonDynamoDB dynamoDB) {
+        super(dynamoDB);
         this.dynamoDB = dynamoDB;
     }
 
     public String savePasta(String guildId, String userId, String alias, String pasta) {
         try {
-            dynamoDB.putItem(buildNewPasta(guildId, userId, alias, pasta));
+            GetItemResult oldPasta = dynamoDB.getItem(PastaItem.TABLE_NAME, PastaItem.buildPastaItemKey(guildId, alias));
+            if (oldPasta.getItem() == null) {
+                dynamoDB.putItem(buildNewPasta(guildId, userId, alias, pasta));
+            } else {
+                return "Copypasta with alias " + alias + " already exists.";
+            }
             return "Copypasta with alias " + alias + " has been saved.";
         } catch (ConditionalCheckFailedException e) {
             return "Copypasta with alias " + alias + " already exists.";
@@ -31,11 +35,23 @@ public class PastaManager {
         }
     }
 
+    //Check the V2 Pasta Table, fail over to the original table.
+    //If pasta is found in original table, save to V2.
     public String getPasta(String guildId, String alias) {
         try {
-            GetItemResult pasta = dynamoDB.getItem(PastaItem.TABLE_NAME, buildPastaItemKey(guildId, alias));
+            GetItemResult pastaV2 = dynamoDB.getItem(PastaItemV2.TABLE_NAME, PastaItemV2.buildPastaItemKey(guildId, alias));
+            if (pastaV2.getItem() != null) {
+                return pastaV2.getItem().get(PastaItem.PASTA).getS();
+            }
+            GetItemResult pasta = dynamoDB.getItem(PastaItem.TABLE_NAME, PastaItem.buildPastaItemKey(guildId, alias));
             if (pasta.getItem() != null) {
-                return pasta.getItem().get(PastaItem.PASTA).getS();
+                String owner = pasta.getItem().get(PastaItem.OWNER).getS();
+                String text = pasta.getItem().get(PastaItem.PASTA).getS();
+                try {
+                    savePasta(guildId, owner, alias, text);
+                } finally {
+                    return text;
+                }
             }
             return "No copypasta with alias " + alias + " found.";
         } catch (Exception e) {
@@ -45,12 +61,11 @@ public class PastaManager {
 
     private PutItemRequest buildNewPasta(String guildId, String userId, String alias, String pasta) {
         Map<String, String> expressionAttributeNames = new HashMap<>();
-        expressionAttributeNames.put(PastaItem.KEY_EXPRESSION_SUBSTITUTION, PastaItem.KEY);
         PutItemRequest pastaRequest = new PutItemRequest()
-                .withItem(buildPastaItemKey(guildId, alias))
+                .withItem(PastaItemV2.buildPastaItemKey(guildId, alias))
                 .withConditionExpression(CONDITION_EXPRESSION)
                 .withExpressionAttributeNames(expressionAttributeNames);
-        pastaRequest.setTableName(PastaItem.TABLE_NAME);
+        pastaRequest.setTableName(PastaItemV2.TABLE_NAME);
         pastaRequest.addItemEntry(PastaItem.OWNER, new AttributeValue().withS(userId));
         pastaRequest.addItemEntry(PastaItem.PASTA, new AttributeValue().withS(pasta));
         return pastaRequest;

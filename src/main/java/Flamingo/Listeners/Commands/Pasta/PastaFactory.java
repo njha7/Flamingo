@@ -26,6 +26,6 @@ public class PastaFactory extends AbstractCommandFactory {
     }
 
     public void buildPastaManager(AmazonDynamoDB dynamoDB) {
-        pastaManager = new PastaManager(dynamoDB);
+        pastaManager = new PastaManagerV2(dynamoDB);
     }
 }
