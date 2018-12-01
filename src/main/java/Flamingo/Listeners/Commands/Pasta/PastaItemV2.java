@@ -8,7 +8,7 @@ import java.util.Map;
 public class PastaItemV2 {
     public static final String HASH_KEY = "guild";
     public static final String RANGE_KEY = "alias";
-    public static final String TABLE_NAME = "FlamingoStrikes";
+    public static final String TABLE_NAME = "FlamingoPasta";
     public static final String PASTA_EXPRESSION_SUBSTITUTION = ":p";
     public static final String OWNER_EXPRESSION_SUBSTITUTION = ":o";
     public static final String OWNER = "owner";
